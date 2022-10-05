@@ -7,7 +7,7 @@
 #
 ################################################################################
 # \copyright
-# Copyright 2018-2021, Cypress Semiconductor Corporation (an Infineon company)
+# Copyright 2018-2022, Cypress Semiconductor Corporation (an Infineon company)
 # SPDX-License-Identifier: Apache-2.0
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,22 +23,29 @@
 # limitations under the License.
 ################################################################################
 
-
 ################################################################################
 # Basic Configuration
 ################################################################################
 
+#Type of MTB Makefile Options include:
+#
+#COMBINED    -- Top Level Makefile usually for single standalone application
+#APPLICATION -- Top Level Makefile usually for multi project application
+#PROJECT     -- Project Makefile under Application
+#
+MTB_TYPE=COMBINED
+
 # Target board/hardware (BSP).
-# To change the target, it is recommended to use the Library manager
-# ('make modlibs' from command line), which will also update Eclipse IDE launch
-# configurations. If TARGET is manually edited, ensure TARGET_<BSP>.mtb with a
+# To change the target, it is recommended to use the Library manager 
+# ('make modlibs' from command line), which will also update Eclipse IDE launch 
+# configurations. If TARGET is manually edited, ensure TARGET_<BSP>.mtb with a 
 # valid URL exists in the application, run 'make getlibs' to fetch BSP contents
 # and update or regenerate launch configurations for your IDE.
 TARGET=CY8CPROTO-062-4343W
 
 # Name of application (used to derive name of final linked file).
-#
-# If APPNAME is edited, ensure to update or regenerate launch
+# 
+# If APPNAME is edited, ensure to update or regenerate launch 
 # configurations for your IDE.
 APPNAME=mtb-example-psoc6-qspi-xip
 
@@ -50,20 +57,14 @@ APPNAME=mtb-example-psoc6-qspi-xip
 #
 # See also: CY_COMPILER_PATH below
 TOOLCHAIN=GCC_ARM
-ifeq ($(TOOLCHAIN),ARM)
-$(error This code example requires customized linker script to work with IAR and ARM toolchains. Refer to Design and Implementation section in README.md for details.)
-endif
-ifeq ($(TOOLCHAIN),IAR)
-$(error This code example requires customized linker script to work with IAR and ARM toolchains. Refer to Design and Implementation section in README.md for details.)
-endif
 
 # Default build configuration. Options include:
 #
 # Debug -- build with minimal optimizations, focus on debugging.
 # Release -- build with full optimizations
 # Custom -- build with custom configuration, set the optimization flag in CFLAGS
-#
-# If CONFIG is manually edited, ensure to update or regenerate launch configurations
+# 
+# If CONFIG is manually edited, ensure to update or regenerate launch configurations 
 # for your IDE.
 CONFIG=Debug
 
@@ -130,9 +131,6 @@ LDFLAGS=
 # Additional / custom libraries to link in to the application.
 LDLIBS=
 
-# Path to the linker script to use (if empty, use the default linker script).
-LINKER_SCRIPT=./qspi_xip_app.ld
-
 # Custom pre-build commands to run.
 PREBUILD=
 
@@ -151,9 +149,9 @@ CY_APP_PATH=
 
 # Relative path to the shared repo location.
 #
-# All .mtb files have the format, <URI>#<COMMIT>#<LOCATION>. If the <LOCATION> field
-# begins with $$ASSET_REPO$$, then the repo is deposited in the path specified by
-# the CY_GETLIBS_SHARED_PATH variable. The default location is one directory level
+# All .mtb files have the format, <URI>#<COMMIT>#<LOCATION>. If the <LOCATION> field 
+# begins with $$ASSET_REPO$$, then the repo is deposited in the path specified by 
+# the CY_GETLIBS_SHARED_PATH variable. The default location is one directory level 
 # above the current app directory.
 # This is used with CY_GETLIBS_SHARED_NAME variable, which specifies the directory name.
 CY_GETLIBS_SHARED_PATH=../

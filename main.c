@@ -8,7 +8,7 @@
 *
 *
 *******************************************************************************
-* Copyright 2019-2021, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2019-2022, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -46,6 +46,7 @@
 #include "cy_retarget_io.h"
 #include "cy_serial_flash_qspi.h"
 #include "cycfg_qspi_memslot.h"
+#include <inttypes.h>
 
 
 /*******************************************************************************
@@ -66,8 +67,7 @@ const char *hi_word CY_SECTION(".cy_xip") __attribute__((used)) = "Hello from th
 /*******************************************************************************
 * Function declarations
 *******************************************************************************/
-CY_SECTION(".cy_xip_code") __attribute__((used))
-void print_from_external_memory(const char *buf);
+CY_SECTION(".cy_xip_code") __attribute__((used)) void print_from_external_memory(const char *buf);
 
 /********************************************************
 * Function Name: print_from_external_memory
@@ -158,7 +158,7 @@ void check_address(char *message, uint32_t addr)
     {
         printf("\n================================================================================\n");
         printf("FAIL: %s\n", message);
-        printf("Address: 0x%lx", addr);
+        printf("Address: 0x%08"PRIx32"\n", addr);
         printf("\n================================================================================\n");
 
         /* On failure, turn the LED ON */
@@ -269,13 +269,13 @@ int main(void)
     addr = (uint32_t)&hi_word;
     check_address("String not found in external memory.", addr);
     /* Print the string from external memory */
-    printf("\nString in the external memory at address: 0x%lx", addr);
+    printf("\nString in the external memory at address: 0x%08"PRIx32"\n", addr);
     printf("\n-------------------------------------------------------\n%s", hi_word);
-
+    
     addr = (uint32_t)&print_from_external_memory;
     check_address("Function not found in external memory.", addr);
     /* Print by calling function that lives in external memory */
-    printf("\nFunction call from external memory address: 0x%lx", addr);
+    printf("\nFunction call from external memory address: 0x%08"PRIx32"\n", addr);
     printf("\n-------------------------------------------------------");
     print_from_external_memory("\nHello from the external function!\n");
 
