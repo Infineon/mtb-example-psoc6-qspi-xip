@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy8c6xx4_cm4_dual.ld
-* \version 2.91
+* \version 2.95.1
 *
 * Linker file for the GNU C compiler.
 *
@@ -45,7 +45,7 @@ STACK_SIZE = 0x1000;
 
 /* By default, the COMPONENT_CM0P_SLEEP prebuilt image is used for the CM0p core.
 * More about CM0+ prebuilt images, see here:
-* https://github.com/cypresssemiconductorco/psoc6cm0p
+* https://github.com/Infineon/psoc6cm0p
 */
 /* The size of the Cortex-M0+ application image at the start of FLASH */
 FLASH_CM0P_SIZE  = 0x2000;
@@ -123,11 +123,11 @@ GROUP(libgcc.a libc.a libm.a libnosys.a)
 
 SECTIONS
 {
-    .cy_xip_code :
+    /* Section is used for storing executable code in external memory*/
+     .cy_xip_code :
     {
         KEEP(*(.cy_xip_code))
-    } > xip 
-    
+    } > xip
     
      /* Cortex-M0+ application flash image area */
     .cy_m0p_image ORIGIN(flash) :
@@ -238,8 +238,9 @@ SECTIONS
     } > ram
 
 
-    .data __ram_vectors_end__ : AT (__etext)
+    .data __ram_vectors_end__ :
     {
+        . = ALIGN(4);
         __data_start__ = .;
 
         *(vtable)
@@ -273,7 +274,7 @@ SECTIONS
 
         __data_end__ = .;
 
-    } > ram
+    } > ram AT>flash
 
 
     /* Place variables in the section that should not be initialized during the

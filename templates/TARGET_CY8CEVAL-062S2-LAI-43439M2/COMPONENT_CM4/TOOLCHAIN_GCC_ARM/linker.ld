@@ -129,7 +129,7 @@ GROUP(libgcc.a libc.a libm.a libnosys.a)
 
 SECTIONS
 {
-    /* Section is used for storing executable code in external memory*/
+     /* Section is used for storing executable code in external memory*/
      .cy_xip_code :
     {
         KEEP(*(.cy_xip_code))

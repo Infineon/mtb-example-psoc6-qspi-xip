@@ -8,7 +8,7 @@
 *
 *
 *******************************************************************************
-* Copyright 2019-2022, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2019-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -47,7 +47,6 @@
 #include "cy_serial_flash_qspi.h"
 #include "cycfg_qspi_memslot.h"
 #include <inttypes.h>
-
 
 /*******************************************************************************
 * Macros

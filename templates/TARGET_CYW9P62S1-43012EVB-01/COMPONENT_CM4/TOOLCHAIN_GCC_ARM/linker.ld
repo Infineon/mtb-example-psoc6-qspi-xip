@@ -1,6 +1,6 @@
 /***************************************************************************//**
-* \file cy8c6xx4_cm4_dual.ld
-* \version 2.91
+* \file cy8c6xx7_cm4_dual.ld
+* \version 2.95.1
 *
 * Linker file for the GNU C compiler.
 *
@@ -45,7 +45,7 @@ STACK_SIZE = 0x1000;
 
 /* By default, the COMPONENT_CM0P_SLEEP prebuilt image is used for the CM0p core.
 * More about CM0+ prebuilt images, see here:
-* https://github.com/cypresssemiconductorco/psoc6cm0p
+* https://github.com/Infineon/psoc6cm0p
 */
 /* The size of the Cortex-M0+ application image at the start of FLASH */
 FLASH_CM0P_SIZE  = 0x2000;
@@ -70,9 +70,15 @@ MEMORY
      * Your changes must be aligned with the corresponding memory regions for CM0+ core in 'xx_cm0plus.ld',
      * where 'xx' is the device group; for example, 'cy8c6xx7_cm0plus.ld'.
      */
-    ram               (rwx)   : ORIGIN = 0x08002000, LENGTH = 0x1D800
-    flash             (rx)    : ORIGIN = 0x10000000, LENGTH = 0x40000
+    ram               (rwx)   : ORIGIN = 0x08002000, LENGTH = 0x45800
+    flash             (rx)    : ORIGIN = 0x10000000, LENGTH = 0x100000
 
+    /* This is a 32K flash region used for EEPROM emulation. This region can also be used as the general purpose flash.
+     * You can assign sections to this memory region for only one of the cores.
+     * Note some middleware (e.g. BLE, Emulated EEPROM) can place their data into this memory region.
+     * Therefore, repurposing this memory region will prevent such middleware from operation.
+     */
+    em_eeprom         (rx)    : ORIGIN = 0x14000000, LENGTH = 0x8000       /*  32 KB */
 
     /* The following regions define device specific memory regions and must not be changed. */
     sflash_user_data  (rx)    : ORIGIN = 0x16000800, LENGTH = 0x800        /* Supervisory flash: User data */
@@ -123,11 +129,11 @@ GROUP(libgcc.a libc.a libm.a libnosys.a)
 
 SECTIONS
 {
-    .cy_xip_code :
+    /* Section is used for storing executable code in external memory*/
+     .cy_xip_code :
     {
         KEEP(*(.cy_xip_code))
-    } > xip 
-    
+    } > xip
     
      /* Cortex-M0+ application flash image area */
     .cy_m0p_image ORIGIN(flash) :
@@ -195,7 +201,7 @@ SECTIONS
 
     /* To copy multiple ROM to RAM sections,
      * uncomment .copy.table section and,
-     * define __STARTUP_COPY_MULTIPLE in startup_psoc6_04_cm4.S */
+     * define __STARTUP_COPY_MULTIPLE in startup_psoc6_01_cm4.S */
     .copy.table :
     {
         . = ALIGN(4);
@@ -217,7 +223,7 @@ SECTIONS
 
     /* To clear multiple BSS sections,
      * uncomment .zero.table section and,
-     * define __STARTUP_CLEAR_BSS_MULTIPLE in startup_psoc6_04_cm4.S */
+     * define __STARTUP_CLEAR_BSS_MULTIPLE in startup_psoc6_01_cm4.S */
     .zero.table :
     {
         . = ALIGN(4);
@@ -238,8 +244,9 @@ SECTIONS
     } > ram
 
 
-    .data __ram_vectors_end__ : AT (__etext)
+    .data __ram_vectors_end__ :
     {
+        . = ALIGN(4);
         __data_start__ = .;
 
         *(vtable)
@@ -273,7 +280,7 @@ SECTIONS
 
         __data_end__ = .;
 
-    } > ram
+    } > ram AT>flash
 
 
     /* Place variables in the section that should not be initialized during the
@@ -346,6 +353,11 @@ SECTIONS
     } > flash
 
 
+    /* Emulated EEPROM Flash area */
+    .cy_em_eeprom :
+    {
+        KEEP(*(.cy_em_eeprom))
+    } > em_eeprom
 
 
     /* Supervisory Flash: User data */
@@ -411,9 +423,13 @@ SECTIONS
 /* The following symbols used by the cymcuelftool. */
 /* Flash */
 __cy_memory_0_start    = 0x10000000;
-__cy_memory_0_length   = 0x00040000;
+__cy_memory_0_length   = 0x00100000;
 __cy_memory_0_row_size = 0x200;
 
+/* Emulated EEPROM Flash area */
+__cy_memory_1_start    = 0x14000000;
+__cy_memory_1_length   = 0x8000;
+__cy_memory_1_row_size = 0x200;
 
 /* Supervisory Flash */
 __cy_memory_2_start    = 0x16000000;
